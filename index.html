@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Como a cápsula chega até outro computador? — Cápsula do Tempo Digital</title>
+  <meta name="description"
+    content="Simulação: os dados de um arquivo são organizados em pacotes, atravessam roteadores e são reconstruídos no computador de destino.">
+  <!-- Fonte amigável da unidade. Se não carregar (sem internet), o CSS usa
+     uma pilha de fontes do próprio sistema — nada quebra. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ======================================================================
+     A página inteira ocupa exatamente uma viewport (100dvh), dividida em
+     quatro linhas: cabeçalho fino, stepper, palco (simulação) e rodapé de
+     controles. Nada de essencial fica fora da tela.
+     ====================================================================== -->
+
+  <!-- ---------- cabeçalho fino ---------- -->
+  <header class="cabecalho">
+    <span class="selo" id="seloCabecalho" aria-hidden="true">📦</span>
+    <div class="cabecalho-textos">
+      <h2>Como a cápsula chega até outro computador?</h2>
+      <p class="missao">
+        <span class="missao-texto">Missão: descobrir o caminho dos dados até o outro computador.</span>
+      </p>
+    </div>
+  </header>
+
+  <!-- ---------- FAIXA 1 — stepper grande ---------- -->
+  <nav class="stepper-wrap" aria-label="Etapas do processo">
+    <ol class="stepper" id="stepper">
+
+      <li class="passo" data-passo="0">
+        <span class="passo-marca" aria-hidden="true">
+          <span class="passo-num">1</span>
+          <svg class="passo-icone" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 2.5h8l4 4v15H6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+            <path d="M14 2.5v4h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+          </svg>
+        </span>
+        <span class="passo-rotulo">Arquivo</span>
+      </li>
+
+      <li class="passo" data-passo="1">
+        <span class="passo-marca" aria-hidden="true">
+          <span class="passo-num">2</span>
+          <svg class="passo-icone" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2.5" y="4" width="8" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2" />
+            <rect x="13.5" y="4" width="8" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2" />
+            <rect x="2.5" y="14" width="8" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2" />
+            <rect x="13.5" y="14" width="8" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+        </span>
+        <span class="passo-rotulo">Pacotes</span>
+      </li>
+
+      <li class="passo" data-passo="2">
+        <span class="passo-marca" aria-hidden="true">
+          <span class="passo-num">3</span>
+          <svg class="passo-icone" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h5m4 0h5M10 12l4-6M10 12l4 6" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" />
+            <circle cx="3.5" cy="12" r="2.4" fill="currentColor" />
+            <circle cx="15.5" cy="5.5" r="2.4" fill="currentColor" />
+            <circle cx="15.5" cy="18.5" r="2.4" fill="currentColor" />
+            <circle cx="21" cy="12" r="2.4" fill="currentColor" />
+          </svg>
+        </span>
+        <span class="passo-rotulo">Rede</span>
+      </li>
+
+      <li class="passo" data-passo="3">
+        <span class="passo-marca" aria-hidden="true">
+          <span class="passo-num">4</span>
+          <svg class="passo-icone" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2.5" y="15" width="5" height="6" rx="1.2" fill="none" stroke="currentColor" stroke-width="2" />
+            <rect x="9.5" y="10" width="5" height="11" rx="1.2" fill="none" stroke="currentColor" stroke-width="2" />
+            <rect x="16.5" y="5" width="5" height="16" rx="1.2" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+        </span>
+        <span class="passo-rotulo">Organizar</span>
+      </li>
+
+      <li class="passo" data-passo="4">
+        <span class="passo-marca" aria-hidden="true">
+          <span class="passo-num">5</span>
+          <svg class="passo-icone" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 2.5h8l4 4v15H6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+            <path d="M9 14l2.5 2.5L16 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </span>
+        <span class="passo-rotulo">Reconstruir</span>
+      </li>
+
+    </ol>
+  </nav>
+
+  <!-- ---------- FAIXA 2 — palco da simulação ---------- -->
+  <div class="palco">
+
+    <!-- cena: origem · rede · destino (desenhada pelo script.js) -->
+    <section class="cena-wrap" id="cenaWrap" aria-labelledby="cenaTitulo">
+      <h2 class="sr-only" id="cenaTitulo">Simulação da transmissão</h2>
+      <svg id="cena" viewBox="0 0 1280 520" preserveAspectRatio="xMidYMid meet" role="img" aria-describedby="cenaDesc">
+        <desc id="cenaDesc">
+          À esquerda, o computador de origem com o arquivo Capsula_do_Tempo.zip.
+          No centro, quatro roteadores ligados por dois caminhos possíveis.
+          À direita, o computador de destino: os pacotes chegam dentro da tela dele.
+        </desc>
+        <g id="camadaConexoes"></g>
+        <g id="camadaNos"></g>
+        <g id="camadaComparacao"></g>
+        <g id="camadaPacotes"></g>
+      </svg>
+    </section>
+
+    <!-- atividade: ocupa o MESMO espaço da cena, substituindo-a -->
+    <section class="atividade" id="atividade" hidden aria-labelledby="tituloAtividade">
+      <div class="atividade-conteudo">
+        <h2 id="tituloAtividade"><span aria-hidden="true">🧩</span> Qual foi a ordem do processo?</h2>
+        <p class="atividade-sub">Use as setas (ou arraste) para colocar os cartões na ordem certa.</p>
+
+        <ul class="ordenacao" id="ordenacao" aria-label="Cartões para ordenar"></ul>
+
+        <div class="atividade-acoes">
+          <button type="button" id="btnVerificar" class="btn btn-primario">Verificar ordem</button>
+          <button type="button" id="btnVerNovamente" class="btn btn-secundario">Ver a simulação de novo</button>
+        </div>
+
+        <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+
+        <!-- fechamento: aparece só depois de acertar -->
+        <div class="fechamento" id="fechamento" hidden>
+          <div class="cartoes-conceito">
+            <div class="conceito conceito-compactar">
+              <h3><span aria-hidden="true">📦</span> Compactar</h3>
+              <p>Reúne arquivos e pode reduzir o espaço ocupado.</p>
+            </div>
+            <div class="conceito conceito-transmitir">
+              <h3><span aria-hidden="true">🌐</span> Transmitir</h3>
+              <p>Envia dados de um dispositivo para outro pela rede.</p>
+            </div>
+          </div>
+          <p class="frase-fecho">
+            A cápsula já estava compactada antes do envio. Agora observamos como os dados foram transmitidos.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ---------- FAIXA 3 — explicação curta + controles ---------- -->
+  <footer class="barra">
+    <div class="explicacao" role="status" aria-live="polite">
+      <span class="explicacao-emoji" id="etapaEmoji" aria-hidden="true">📦</span>
+      <div class="explicacao-textos">
+        <h2 id="etapaTitulo">1. O arquivo está no computador de origem</h2>
+        <p id="etapaTexto">A cápsula está pronta para ser enviada.</p>
+      </div>
+    </div>
+
+    <div class="controles">
+      <button type="button" id="btnPrincipal" class="btn btn-primario">Enviar a cápsula</button>
+      <button type="button" id="btnPausar" class="btn btn-secundario" disabled>Pausar</button>
+      <button type="button" id="btnRecomecar" class="btn btn-secundario">Recomeçar</button>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

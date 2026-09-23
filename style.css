@@ -1,0 +1,1123 @@
+/* =========================================================================
+   CÁPSULA DO TEMPO DIGITAL — AULA 4
+   "Como a cápsula chega até outro computador?"
+
+   LAYOUT
+   A página ocupa exatamente uma viewport (100dvh), dividida em quatro
+   faixas: cabeçalho, stepper, palco (simulação) e barra de controles.
+   O palco recebe todo o espaço que sobra. Nada rola na página.
+
+   ONDE MEXER
+   • CORES ............. bloco :root, logo abaixo (valem também para o SVG)
+   • FUNDO/DEGRADÊ ..... --degrade
+   • FONTES ............ --fonte (e o <link> do Google Fonts no index.html)
+   • BORDAS ............ --raio, --raio-p, --raio-g
+   • SOMBRAS ........... --sombra-1, --sombra-2, --sombra-btn
+   • ALTURA DAS FAIXAS . --alt-cabecalho, --alt-stepper, --alt-barra
+   • EMOJIS ............ no index.html e no objeto TEXTOS do script.js
+   ========================================================================= */
+
+:root {
+  /* ---------- paleta ---------- */
+  --azul: #2f5fd0;
+  --cor-fundo: #eef3fb;
+  /* azul principal: títulos, botão primário */
+  --azul-esc: #248d9f;
+  --azul-cl: #E3EFFC;
+  /* fundo de apoio */
+  --azul-pl: #F2F8FE;
+  /* fundo bem suave */
+  --turquesa: #a6e02a;
+  /* rede, roteadores */
+  --turquesa-cl: #DDF0F2;
+  --coral: #E8663F;
+  /* acento pontual */
+  --coral-txt: #BE4A25;
+  /* versão com contraste para texto */
+  --coral-cl: #FCE5DC;
+  --verde: #2E8B57;
+  /* sucesso / etapas concluídas */
+  --verde-txt: #1F6B41;
+  --verde-cl: #DFF2E6;
+  --amarelo: #FFEFC2;
+  /* atenção */
+  --amarelo-ln: #EFC969;
+  --amarelo-txt: #7A5A12;
+  --creme: #FDF6EC;
+  --branco: #FFFFFF;
+
+  --tinta: #17324A;
+  /* texto principal */
+  --tinta-2: #44596B;
+  /* texto secundário */
+  --borda: #D6E1EA;
+  --borda-2: #A9BCCB;
+
+  /* fundo geral: azul suave à esquerda, creme à direita */
+  /*--degrade: linear-gradient(115deg, #dbe7ff 0%, #ffeacd 42%, #FDF5E9 100%);
+
+  /* ---------- acabamento ---------- */
+  --raio: 18px;
+  --raio-p: 14px;
+  --raio-g: 26px;
+  --sombra-1: 0 1px 2px rgba(23, 50, 74, .05), 0 6px 16px rgba(23, 50, 74, .07);
+  --sombra-2: 0 2px 4px rgba(23, 50, 74, .06), 0 12px 28px rgba(23, 50, 74, .10);
+  --sombra-btn: 0 4px 0 rgba(20, 85, 159, .28), 0 8px 18px rgba(29, 111, 209, .25);
+
+  --fonte: "Nunito", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --fonte-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  /* alturas das faixas fixas */
+  --alt-cabecalho: 3.9rem;
+  --alt-stepper: 5.1rem;
+  --alt-barra: 6.4rem;
+  --gap-faixas: .45rem;
+}
+
+/* ------------------------------ base ----------------------------------- */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: .5rem .7rem .6rem;
+  height: 100dvh;
+  display: grid;
+  grid-template-rows:
+    var(--alt-cabecalho) var(--alt-stepper) minmax(0, 1fr) var(--alt-barra);
+  gap: var(--gap-faixas);
+  overflow: hidden;
+  /* a página nunca rola */
+  background:
+    radial-gradient(circle at 12% 0%, #c3d1ec 0%, transparent 42%),
+    radial-gradient(circle at 92% 8%, #fbedd1 0%, transparent 45%),
+    var(--cor-fundo);
+  background-attachment: fixed;
+  color: var(--tinta);
+  font-family: var(--fonte);
+  font-size: 18px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.2;
+}
+
+p {
+  margin: 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 3px solid var(--coral);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+/* cada faixa é um cartão claro sobre o degradê */
+.cabecalho,
+.stepper-wrap,
+.palco,
+.barra {
+  background: rgba(255, 255, 255, .82);
+  border: 0;
+  border-radius: var(--raio);
+  box-shadow: var(--sombra-1);
+}
+
+/* ---------------------------- cabeçalho -------------------------------- */
+
+.cabecalho {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  padding: 0 1.1rem;
+  min-width: 0;
+  background:
+    linear-gradient(90deg, rgba(227, 239, 252, .95) 0%, rgba(255, 255, 255, .88) 55%, rgba(253, 246, 236, .95) 100%);
+}
+
+.selo {
+  flex: none;
+  width: 2.6rem;
+  height: 2.6rem;
+  display: grid;
+  place-items: center;
+  font-size: 1.4rem;
+  border-radius: 50%;
+  background: var(--branco);
+  border: 0;
+  box-shadow: var(--sombra-1);
+}
+
+.cabecalho-textos {
+  min-width: 0;
+}
+
+.cabecalho h2 {
+  font-size: 1.38rem;
+  font-weight: 800;
+  color: var(--azul);
+  letter-spacing: -.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.missao {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  margin-top: .12rem;
+  min-width: 0;
+}
+
+.tag {
+  flex: none;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--turquesa);
+  background: var(--turquesa-cl);
+  border-radius: 999px;
+  padding: .12rem .55rem;
+}
+
+.missao-texto {
+  font-size: .88rem;
+  color: var(--tinta-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================ FAIXA 1 — STEPPER =========================
+   Estado comunicado por cor + tamanho + peso + número + ícone + ✓.
+   ======================================================================== */
+
+.stepper-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: .35rem .8rem;
+  overflow: hidden;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 1280px;
+}
+
+/* traço entre as etapas */
+.passo+.passo::before {
+  content: "";
+  flex: none;
+  width: 1.1rem;
+  height: 4px;
+  margin: 0 .12rem;
+  border-radius: 999px;
+  background: var(--borda);
+  transition: background-color .25s ease;
+}
+
+.passo {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: .35rem .6rem;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: var(--tinta-2);
+  transition: background-color .25s ease, color .25s ease,
+    border-color .25s ease, box-shadow .25s ease, transform .25s ease;
+}
+
+.passo-marca {
+  position: relative;
+  flex: none;
+  width: 2.45rem;
+  height: 2.45rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--branco);
+  border: 0;
+  color: var(--tinta-2);
+  box-shadow: var(--sombra-1);
+  transition: all .25s ease;
+}
+
+.passo-icone {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+/* número em círculo coral */
+.passo-num {
+  position: absolute;
+  top: -.4rem;
+  left: -.4rem;
+  width: 1.3rem;
+  height: 1.3rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--creme);
+  color: var(--coral-txt);
+  border: 0;
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+.passo-rotulo {
+  font-size: .95rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- concluída: verde + ✓ ---- */
+.passo.feito {
+  color: var(--verde-txt);
+  background: var(--verde-cl);
+}
+
+.passo.feito .passo-marca {
+  border-color: var(--verde);
+  background: var(--branco);
+  color: var(--verde);
+}
+
+.passo.feito .passo-marca::after {
+  content: "✓";
+  position: absolute;
+  right: -.32rem;
+  bottom: -.32rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--verde);
+  color: #fff;
+  font-size: .8rem;
+  font-weight: 800;
+  box-shadow: var(--sombra-1);
+}
+
+.passo.feito .passo-num {
+  background: var(--verde-cl);
+  border-color: var(--verde);
+  color: var(--verde-txt);
+}
+
+.passo.feito+.passo::before {
+  background: var(--verde);
+}
+
+/* ---- ativa: pílula azul, maior, com sombra ---- */
+.passo.ativo {
+  background: linear-gradient(180deg, #2C7FE0 0%, var(--azul) 100%);
+  border-color: var(--azul-esc);
+  color: #fff;
+  flex-grow: 1.5;
+  box-shadow: var(--sombra-2);
+  transform: translateY(-1px);
+}
+
+.passo.ativo .passo-rotulo {
+  font-size: 1.18rem;
+  font-weight: 800;
+}
+
+.passo.ativo .passo-marca {
+  width: 2.8rem;
+  height: 2.8rem;
+  background: #fff;
+  border-color: #fff;
+  color: var(--azul);
+}
+
+.passo.ativo .passo-icone {
+  width: 1.55rem;
+  height: 1.55rem;
+}
+
+.passo.ativo .passo-num {
+  background: var(--coral);
+  color: #fff;
+  border-color: #fff;
+}
+
+/* =========================== FAIXA 2 — PALCO ============================ */
+
+.palco {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  padding: .45rem .8rem .25rem;
+  background:
+    radial-gradient(120% 90% at 12% 20%, rgba(227, 239, 252, .75) 0%, rgba(255, 255, 255, 0) 60%),
+    radial-gradient(110% 90% at 92% 85%, rgba(253, 246, 236, .9) 0%, rgba(255, 255, 255, 0) 62%),
+    rgba(255, 255, 255, .86);
+}
+
+.cena-wrap,
+.atividade {
+  position: absolute;
+  inset: .45rem .8rem .25rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+#cena {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: block;
+  overflow: visible;
+}
+
+.legenda-rede {
+  flex: none;
+  text-align: center;
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--tinta-2);
+  padding-top: .1rem;
+}
+
+/* ------------------- elementos desenhados no SVG ----------------------- */
+
+/* sombra suave reutilizável */
+.computador,
+.roteador,
+.pacote,
+.comparacao-fundo {
+  filter: drop-shadow(0 3px 6px rgba(23, 50, 74, .10));
+}
+
+/* --- cabos da rede --- */
+.conexao {
+  stroke: #C4D5E3;
+  stroke-width: 7;
+  stroke-linecap: round;
+  fill: none;
+  transition: stroke .25s ease, stroke-width .25s ease, opacity .25s ease;
+}
+
+.conexao.ativa {
+  stroke: var(--azul);
+  stroke-width: 10;
+  filter: drop-shadow(0 0 6px rgba(29, 111, 209, .45));
+}
+
+/* --- computadores --- */
+.monitor {
+  fill: var(--branco);
+  stroke: var(--azul);
+  stroke-width: 4;
+}
+
+.computador.origem .tela {
+  fill: var(--azul-pl);
+}
+
+.computador.destino .tela {
+  fill: var(--creme);
+}
+
+.pe {
+  fill: var(--azul);
+}
+
+.rotulo-maquina {
+  font-family: var(--fonte);
+  font-size: 21px;
+  font-weight: 800;
+  fill: var(--azul);
+  text-anchor: middle;
+}
+
+.texto-tela {
+  font-family: var(--fonte);
+  font-size: 15px;
+  font-weight: 600;
+  fill: var(--tinta-2);
+  text-anchor: middle;
+}
+
+/* --- arquivo (zip) --- */
+.arquivo-corpo {
+  fill: var(--branco);
+  stroke: var(--azul);
+  stroke-width: 3;
+}
+
+.arquivo-linha {
+  stroke: var(--azul);
+  stroke-width: 2;
+}
+
+.arquivo-fecho {
+  fill: var(--coral);
+}
+
+.texto-arquivo {
+  font-family: var(--fonte-mono);
+  font-size: 15px;
+  font-weight: 700;
+  fill: var(--tinta);
+  text-anchor: middle;
+}
+
+/* --- roteadores --- */
+.roteador .caixa {
+  fill: var(--turquesa-cl);
+  stroke: var(--turquesa);
+  stroke-width: 3;
+  transition: fill .25s ease, stroke .25s ease, stroke-width .25s ease;
+}
+
+.roteador .simbolo {
+  stroke: var(--turquesa);
+  stroke-width: 3.4;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.roteador.pulso .caixa {
+  fill: var(--amarelo);
+  stroke: var(--coral);
+  stroke-width: 4.5;
+}
+
+.roteador.pulso .simbolo {
+  stroke: var(--coral-txt);
+}
+
+.rotulo-roteador {
+  font-family: var(--fonte);
+  font-size: 17px;
+  font-weight: 700;
+  fill: var(--tinta-2);
+  text-anchor: middle;
+}
+
+/* --- pacotes --- */
+.pacote .corpo {
+  fill: var(--branco);
+  stroke: var(--azul);
+  stroke-width: 3;
+  transition: stroke .3s ease;
+}
+
+.pacote .faixa {
+  fill: var(--azul-cl);
+  transition: fill .3s ease;
+}
+
+.pacote .numero {
+  font-family: var(--fonte);
+  font-size: 22px;
+  font-weight: 800;
+  fill: var(--tinta);
+  text-anchor: middle;
+}
+
+/* recém-chegados (fora de ordem): coral */
+.pacote.no-destino .corpo {
+  stroke: var(--coral);
+}
+
+.pacote.no-destino .faixa {
+  fill: var(--coral-cl);
+}
+
+/* já organizados: verde */
+.pacote.organizado .corpo {
+  stroke: var(--verde);
+}
+
+.pacote.organizado .faixa {
+  fill: var(--verde-cl);
+}
+
+/* --- faixa saída × chegada --- */
+.comparacao-fundo {
+  fill: var(--amarelo);
+  stroke: var(--amarelo-ln);
+  stroke-width: 2;
+}
+
+.comparacao-rotulo {
+  font-family: var(--fonte);
+  font-size: 18px;
+  font-weight: 800;
+  fill: var(--amarelo-txt);
+  text-anchor: end;
+}
+
+.comparacao-caixa {
+  fill: var(--branco);
+  stroke: var(--amarelo-ln);
+  stroke-width: 2;
+}
+
+.comparacao-num {
+  font-family: var(--fonte);
+  font-size: 20px;
+  font-weight: 800;
+  fill: var(--tinta);
+  text-anchor: middle;
+}
+
+/* =========================== FAIXA 3 — BARRA ============================ */
+
+.barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  padding: .55rem .8rem;
+  overflow: hidden;
+}
+
+/* caixa de explicação, com emoji da etapa */
+.explicacao {
+  display: flex;
+  align-items: flex-start;
+  gap: .7rem;
+  min-width: 0;
+  flex: 1 1 auto;
+  background: var(--azul-pl);
+  border: 2px solid var(--azul-cl);
+  border-radius: var(--raio-p);
+  padding: .5rem .85rem;
+  transition: background-color .3s ease, border-color .3s ease;
+}
+
+.explicacao-emoji {
+  flex: none;
+  font-size: 1.4rem;
+  line-height: 1.4;
+}
+
+.explicacao-textos {
+  min-width: 0;
+}
+
+.explicacao h2 {
+  font-size: 1.24rem;
+  font-weight: 800;
+  color: var(--azul);
+}
+
+.explicacao p {
+  margin-top: .1rem;
+  font-size: 1rem;
+  color: var(--tinta-2);
+  max-width: 76ch;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* estados da caixa: atenção (chegada) e sucesso (fim) */
+.explicacao.destaque {
+  background: var(--amarelo);
+  border-color: var(--amarelo-ln);
+}
+
+.explicacao.destaque h2 {
+  color: var(--coral-txt);
+}
+
+.explicacao.destaque p {
+  color: var(--amarelo-txt);
+}
+
+.explicacao.final {
+  background: var(--verde-cl);
+  border-color: var(--verde);
+}
+
+.explicacao.final h2 {
+  color: var(--verde-txt);
+}
+
+/* ------------------------------ botões --------------------------------- */
+
+.controles {
+  flex: none;
+  display: flex;
+  gap: .6rem;
+}
+
+.btn {
+  font: inherit;
+  font-weight: 800;
+  font-size: 1rem;
+  min-height: 48px;
+  padding: .7rem 1.5rem;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform .12s ease, box-shadow .15s ease,
+    background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+
+.btn-primario {
+  background: linear-gradient(180deg, #2C7FE0 0%, var(--azul) 100%);
+  color: #fff;
+  box-shadow: var(--sombra-btn);
+}
+
+.btn-primario:hover:not(:disabled) {
+  background: var(--azul-esc);
+  transform: translateY(-1px);
+}
+
+.btn-primario:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(20, 85, 159, .28);
+}
+
+.btn-secundario {
+  background: var(--branco);
+  color: var(--azul-esc);
+  border-color: var(--azul-cl);
+  box-shadow: var(--sombra-1);
+}
+
+.btn-secundario:hover:not(:disabled) {
+  border-color: var(--azul);
+  background: var(--azul-pl);
+}
+
+.btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ============================= ATIVIDADE ================================ */
+
+.atividade {
+  overflow: auto;
+}
+
+.atividade-conteudo {
+  padding: .8rem 1rem 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.atividade h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--azul);
+}
+
+.atividade-sub {
+  margin-top: .2rem;
+  color: var(--tinta-2);
+  font-size: 1rem;
+}
+
+.ordenacao {
+  list-style: none;
+  margin: .8rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: .5rem;
+  counter-reset: ordem;
+}
+
+.ordenacao li {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  padding: .5rem .8rem;
+  border: 2px solid var(--borda);
+  border-radius: var(--raio-p);
+  background: var(--branco);
+  box-shadow: var(--sombra-1);
+  cursor: grab;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+
+.ordenacao li:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--sombra-2);
+}
+
+.ordenacao li.arrastando {
+  opacity: .45;
+}
+
+.ordenacao li.alvo {
+  border-color: var(--azul);
+  background: var(--azul-pl);
+}
+
+.ordenacao .posicao {
+  counter-increment: ordem;
+  flex: none;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--azul-cl);
+  color: var(--azul-esc);
+  font-weight: 800;
+}
+
+.ordenacao .posicao::before {
+  content: counter(ordem);
+}
+
+.ordenacao .rotulo {
+  flex: 1;
+  font-size: 1.02rem;
+  font-weight: 600;
+}
+
+.setas {
+  flex: none;
+  display: flex;
+  gap: .35rem;
+}
+
+.btn-seta {
+  font: inherit;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  border: 2px solid var(--azul-cl);
+  background: var(--branco);
+  color: var(--azul-esc);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.btn-seta:hover:not(:disabled) {
+  border-color: var(--azul);
+  background: var(--azul-pl);
+}
+
+.btn-seta:disabled {
+  opacity: .3;
+  cursor: not-allowed;
+}
+
+.atividade-acoes {
+  display: flex;
+  gap: .6rem;
+  margin-top: .9rem;
+  flex-wrap: wrap;
+}
+
+.feedback {
+  margin-top: .7rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.feedback .caixa {
+  border-radius: var(--raio-p);
+  padding: .65rem .95rem;
+  border: 2px solid transparent;
+}
+
+.feedback .certo {
+  background: var(--verde-cl);
+  border-color: var(--verde);
+  color: var(--verde-txt);
+}
+
+.feedback .tente {
+  background: var(--amarelo);
+  border-color: var(--amarelo-ln);
+  color: var(--amarelo-txt);
+}
+
+.feedback .ciclo {
+  display: block;
+  margin-top: .2rem;
+  color: var(--tinta);
+}
+
+/* lista mais compacta depois de acertar, para o fechamento caber */
+.atividade.concluida .atividade-sub {
+  display: none;
+}
+
+.atividade.concluida .ordenacao {
+  gap: .35rem;
+  margin-top: .6rem;
+}
+
+.atividade.concluida .ordenacao li {
+  padding: .25rem .8rem;
+}
+
+.atividade.concluida .btn-seta {
+  height: 40px;
+}
+
+.atividade.concluida .atividade-acoes {
+  margin-top: .6rem;
+}
+
+.fechamento {
+  margin-top: .8rem;
+}
+
+.cartoes-conceito {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: .7rem;
+}
+
+.conceito {
+  border: 2px solid var(--borda);
+  border-radius: var(--raio-p);
+  padding: .7rem .9rem;
+  box-shadow: var(--sombra-1);
+}
+
+.conceito h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.conceito p {
+  margin-top: .2rem;
+  color: var(--tinta-2);
+  font-size: .98rem;
+}
+
+.conceito-compactar {
+  border-color: var(--azul);
+  background: var(--azul-pl);
+}
+
+.conceito-compactar h3 {
+  color: var(--azul);
+}
+
+.conceito-transmitir {
+  border-color: var(--coral);
+  background: var(--coral-cl);
+}
+
+.conceito-transmitir h3 {
+  color: var(--coral-txt);
+}
+
+.frase-fecho {
+  margin-top: .6rem;
+  color: var(--tinta-2);
+  font-size: 1rem;
+}
+
+/* =========================== RESPONSIVIDADE ============================= */
+
+@media (max-height: 800px) {
+  :root {
+    --alt-cabecalho: 3.5rem;
+    --alt-stepper: 4.6rem;
+    --alt-barra: 6.2rem;
+  }
+
+  body {
+    font-size: 17px;
+    padding: .4rem .55rem .45rem;
+  }
+
+  .passo-marca {
+    width: 2.15rem;
+    height: 2.15rem;
+  }
+
+  .passo.ativo .passo-marca {
+    width: 2.45rem;
+    height: 2.45rem;
+  }
+
+  .explicacao h2 {
+    font-size: 1.16rem;
+  }
+
+  .explicacao p {
+    font-size: .95rem;
+  }
+
+  .cabecalho h1 {
+    font-size: 1.18rem;
+  }
+}
+
+@media (max-height: 640px) {
+  :root {
+    --alt-stepper: 4.1rem;
+    --alt-barra: 5.8rem;
+  }
+
+  .passo-rotulo {
+    font-size: .9rem;
+  }
+
+  .passo.ativo .passo-rotulo {
+    font-size: 1.02rem;
+  }
+
+  .legenda-rede {
+    display: none;
+  }
+
+  .missao-texto {
+    display: none;
+  }
+}
+
+/* o stepper esconde o rótulo das etapas inativas antes de truncá-lo */
+@media (max-width: 1100px) {
+  .missao-texto {
+    display: none;
+  }
+
+  .passo:not(.ativo) .passo-rotulo {
+    display: none;
+  }
+
+  .passo {
+    flex: 0 0 auto;
+  }
+
+  .passo.ativo {
+    flex: 1 1 auto;
+  }
+}
+
+@media (max-width: 900px) {
+  :root {
+    --alt-barra: 10.5rem;
+  }
+
+  .cabecalho h1 {
+    font-size: 1.05rem;
+  }
+
+  .barra {
+    flex-direction: column;
+    align-items: stretch;
+    gap: .5rem;
+  }
+
+  .controles {
+    justify-content: space-between;
+  }
+
+  .btn {
+    padding: .7rem 1rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .passo+.passo::before {
+    width: .7rem;
+    margin: 0 .1rem;
+  }
+
+  .explicacao p {
+    -webkit-line-clamp: 3;
+  }
+
+  .selo {
+    display: none;
+  }
+}
+
+/* ===================== PREFERÊNCIA POR MENOS MOVIMENTO ================== */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+  }
+
+  .conexao.ativa {
+    filter: none;
+  }
+}
+
+/* Cabeçalho, etapas e barra inferior sem grandes caixas */
+.cabecalho,
+.stepper-wrap,
+.barra {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+/* Mantém somente a simulação dentro de uma box */
+.palco {
+  background:
+    radial-gradient(120% 90% at 12% 20%,
+      rgba(227, 239, 252, .75) 0%,
+      rgba(255, 255, 255, 0) 60%),
+    radial-gradient(110% 90% at 92% 85%,
+      rgba(253, 246, 236, .9) 0%,
+      rgba(255, 255, 255, 0) 62%),
+    rgba(255, 255, 255, .86) !important;
+
+  border: none !important;
+  border-radius: var(--raio-g) !important;
+  box-shadow: var(--sombra-1) !important;
+}
