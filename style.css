@@ -1121,3 +1121,156 @@ p {
   border-radius: var(--raio-g) !important;
   box-shadow: var(--sombra-1) !important;
 }
+
+
+/* =========================================================================
+   TELA INICIAL (adicionada depois; não altera nada da simulação)
+   Todas as regras abaixo usam classes próprias, com prefixo .start-,
+   e a única interferência na aplicação é esconder as quatro faixas
+   enquanto a porta de entrada está aberta — com visibility, que preserva
+   o layout e não provoca recálculo da cena.
+   ========================================================================= */
+
+.start-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  background: var(--degrade);
+  opacity: 1;
+  transition: opacity .18s ease;
+}
+
+.start-screen.saindo {
+  opacity: 0;
+}
+
+/* enquanto a tela inicial está aberta, a aplicação fica oculta */
+body:not(.app-liberado)>.cabecalho,
+body:not(.app-liberado)>.stepper-wrap,
+body:not(.app-liberado)>.palco,
+body:not(.app-liberado)>.barra {
+  visibility: hidden;
+}
+
+body.app-liberado .start-screen {
+  display: none;
+}
+
+.start-card {
+  width: min(560px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  text-align: center;
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-g);
+  box-shadow: var(--sombra-2);
+  padding: 1.6rem 2rem 1.8rem;
+}
+
+.start-illustration {
+  display: block;
+  width: min(220px, 62%);
+  height: auto;
+  margin: 0 auto .5rem;
+}
+
+.start-badge {
+  display: inline-block;
+  margin: 0 0 .9rem;
+  padding: .3rem .95rem;
+  border-radius: 999px;
+  background: var(--turquesa-cl);
+  color: var(--turquesa);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.start-title {
+  font-size: clamp(1.5rem, 3.2vw, 1.95rem);
+  font-weight: 800;
+  color: var(--azul);
+  line-height: 1.2;
+  margin: 0 0 .7rem;
+}
+
+.start-description {
+  margin: 0 auto 1.3rem;
+  max-width: 44ch;
+  font-size: 1rem;
+  color: var(--tinta-2);
+  line-height: 1.5;
+}
+
+.start-screen .start-button {
+  font: inherit;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #fff;
+  background: linear-gradient(180deg, #2C7FE0 0%, var(--azul) 100%);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  padding: .85rem 2.2rem;
+  min-height: 52px;
+  cursor: pointer;
+  box-shadow: var(--sombra-btn);
+  transition: transform .12s ease, background-color .15s ease, box-shadow .15s ease;
+}
+
+.start-screen .start-button:hover {
+  background: var(--azul-esc);
+  transform: translateY(-1px);
+}
+
+.start-screen .start-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(20, 85, 159, .28);
+}
+
+.start-note {
+  margin: 1.2rem 0 0;
+  padding: .6rem .9rem;
+  border-radius: var(--raio-p);
+  background: var(--creme);
+  border: 1px solid #F0E2CC;
+  color: var(--tinta-2);
+  font-size: .92rem;
+  line-height: 1.4;
+}
+
+/* telas baixas: a porta de entrada encolhe para não precisar rolar */
+@media (max-height: 700px) {
+  .start-card {
+    padding: 1.1rem 1.6rem 1.3rem;
+  }
+
+  .start-illustration {
+    width: min(170px, 48%);
+    margin-bottom: .3rem;
+  }
+
+  .start-badge {
+    margin-bottom: .6rem;
+  }
+
+  .start-description {
+    margin-bottom: 1rem;
+    font-size: .95rem;
+  }
+
+  .start-note {
+    margin-top: .9rem;
+    font-size: .88rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .start-card {
+    padding: 1.2rem 1.1rem 1.4rem;
+  }
+}
