@@ -1180,3 +1180,28 @@ function iniciar() {
 }
 
 document.addEventListener("DOMContentLoaded", iniciar);
+
+/* =========================================================================
+   TELA INICIAL — porta de entrada
+   Bloco acrescentado no fim do arquivo. Não toca em nenhuma função acima:
+   apenas esconde a tela inicial e libera a aplicação, que já foi montada
+   normalmente por iniciar().
+   ========================================================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const telaInicial = document.getElementById("telaInicial");
+  const botaoComecar = document.getElementById("btnComecarPercurso");
+  if (!telaInicial || !botaoComecar) return;
+
+  botaoComecar.addEventListener("click", function () {
+    telaInicial.classList.add("saindo"); // fade curto
+    window.setTimeout(
+      function () {
+        document.body.classList.add("app-liberado"); // revela a simulação
+        const principal = document.getElementById("btnPrincipal");
+        if (principal) principal.focus(); // foco entra na atividade
+      },
+      menosMovimento ? 0 : 180,
+    );
+  });
+});
